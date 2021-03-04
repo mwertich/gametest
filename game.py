@@ -81,7 +81,7 @@ if __name__ == '__main__':
             print("Invalid Move")
             continue
         if board.check_win(active_player):
-            print("You have won, " )
+            print("You have won, player: " + board.sign_to_printable(active_player.symbol))
             break
         if active_player == player_a:
             active_player = player_b
