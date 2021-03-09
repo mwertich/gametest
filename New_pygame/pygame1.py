@@ -1,4 +1,7 @@
 import pygame
+import sys
+import random
+
 pygame.init()
 win_size = 500
 win = pygame.display.set_mode((win_size, win_size))
@@ -11,39 +14,73 @@ run = True
 
 
 
+class Player():
+    def __init__(self, x, y, width, height, vel):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.vel = vel
 
-while run:
-    pygame.time.delay(100)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-    keys = pygame.key.get_pressed()
+    def _check_border(self):
+        if self.x < 0:
+            self.x = 0
+        if self.y < 0:
+            self.y = 0
 
-    if keys[pygame.K_LEFT]:
-        x -= vel
-        if x <= 0:
-            x = 0
+    def move(self, x, y):
+        self.x += x
+        self.y += y
+        self._check_border()
 
-    if keys[pygame.K_RIGHT]:
-        x += vel
-        if x > win_size - width:
-            x = win_size -width
 
-    if keys[pygame.K_UP]:
-        y -= vel
-        if y <= 0:
-            y = 0
 
-    if keys[pygame.K_DOWN]:
-        y += vel
-        if y > win_size - height:
-            y = win_size - height
 
-    if keys[pygame.K_SPACE]:
-        isJump = True
+def start_game():
+    return Player(random.randint(0, win_size-width), random.randint(0, win_size-height), width, height, vel)
 
+
+def update_win():
     win.fill((0, 0, 0))
     pygame.draw.rect(win, color_red, (x, y, width, height))
     pygame.display.update()
 
-pygame.quit()
+
+def run_game(player):
+
+    pygame.time.delay(100)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            return False
+    keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_LEFT]:
+        player.move(-vel, 0)
+
+
+    if keys[pygame.K_RIGHT]:
+        player.move(vel, 0)
+
+    if keys[pygame.K_UP]:
+        player.move(0, vel)
+
+    if keys[pygame.K_DOWN]:
+        player.move(0, -vel)
+
+    if keys[pygame.K_SPACE]:
+        pass
+
+    update_win()
+
+
+
+
+    return True
+
+if __name__ == '__main__':
+    player = start_game()
+    while run:
+        run = run_game(player)
+
+    pygame.quit()
+    sys.exit()
