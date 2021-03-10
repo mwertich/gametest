@@ -69,10 +69,9 @@ def update_win():
         draw_rect(color_blue, enemy.x, enemy.y, enemy.width, enemy.height)
 
     spielerfigur = pygame.image.load("New_pygame/biene.png")
-    win.blit(spielerfigur, (0, 0))
+    #win.blit(spielerfigur, (0, 0))
 
     pygame.display.update()
-
 
 
 
