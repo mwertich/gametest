@@ -39,6 +39,8 @@ def generate_enemy():
     while (sx == 0) or (sy == 0):
         sx = random.randint(-10, 10)
         sy = random.randint(-10, 10)
+    while (abs(x - player.x) < size) and (abs(y - player.y) < size):
+        x, y = random.randint(0, win_size - width), random.randint(0, win_size - height)
     board.add_enemy(x, y, size, size, sx, sy)
 
 
