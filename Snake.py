@@ -8,6 +8,7 @@ GREEN = (0, 255, 0)
 WIDTH, HEIGHT = 1000, 1000
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+GRAIN = 50
 
 pygame.init()
 # main settings
@@ -19,22 +20,22 @@ all_sprites = pygame.sprite.Group()
 
 
 class Snake:
-    def __init__(self, color):
-        self.speed = 5
+    def __init__(self, color, grain):
+        self.grain = grain
         self.direction = 1
         self.image = pygame
-        self.size = (50, 50)
-        self.posx = 250
-        self.posy = 250
+        self.size = (grain, grain)
+        self.headx = 250
+        self.heady = 250
         self.head = None
 
-
-    def move_head(self):
+    def check_head(self):
         if self.head.left > WIDTH:
             self.head.right = 0
 
     def update(self):
-        self.head = pygame.Rect((self.posx, self.posy), self.size)
+        self.move_head()
+        self.head = pygame.Rect((self.headx, self.heady), self.size)
 
     def check_keys(self):
         keystate = pygame.key.get_pressed()
@@ -50,8 +51,13 @@ class Snake:
     def move_head(self):
         self.check_keys()
         if self.direction == 0:
-            pass
-
+            self.heady += self.grain
+        if self.direction == 1:
+            self.headx += self.grain
+        if self.direction == 2:
+            self.heady -= self.grain
+        if self.direction == 3:
+            self.headx -= self.grain
 
     def check_dir(self):
         pass
@@ -69,15 +75,7 @@ class Board:
         all_tiles.append(tile_w)
 
 
-snake = Snake(ROSA)
-
-while True:
-    fps_control.tick(20)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-
+def draw_grid():
     all_tiles = []
     tile_b = pygame.Surface((50, 50))
     tile_b.fill(BLACK)
@@ -91,11 +89,22 @@ while True:
     for i in range(0, HEIGHT, 50):
         count_col += 1
         count = 0 + count_col
-
         for j in range(0, WIDTH, 50):
             screen.blit(all_tiles[count % 2], (i, j))
             count += 1
 
+
+snake = Snake(ROSA, 50)
+
+
+while True:
+    fps_control.tick(2)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+    draw_grid()
     snake.update()
     pygame.draw.rect(screen, ROSA, snake.head)
     pygame.display.flip()
