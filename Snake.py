@@ -18,23 +18,43 @@ fps_control = pygame.time.Clock()
 all_sprites = pygame.sprite.Group()
 
 
-class Snake(pygame.sprite.Sprite):
+class Snake:
     def __init__(self, color):
-        super().__init__()
-        self.image = pygame.Surface((300, 50))
-        self.image.fill(color)
-        self.rect = self.image.get_rect()
-        self.rect.center = (, HEIGHT/2)
         self.speed = 5
+        self.direction = 1
+        self.image = pygame
+        self.size = (50, 50)
+        self.posx = 250
+        self.posy = 250
+        self.head = None
+
+
+    def move_head(self):
+        if self.head.left > WIDTH:
+            self.head.right = 0
 
     def update(self):
+        self.head = pygame.Rect((self.posx, self.posy), self.size)
+
+    def check_keys(self):
         keystate = pygame.key.get_pressed()
-        if self.rect.left > WIDTH:
-            self.rect.right = 0
-        if keystate[pygame.K_LEFT]:
-            self.rect.x -= self.speed
+        if keystate[pygame.K_UP]:
+            self.direction = 0
         if keystate[pygame.K_RIGHT]:
-            self.rect.x += self.speed
+            self.direction = 1
+        if keystate[pygame.K_DOWN]:
+            self.direction = 2
+        if keystate[pygame.K_LEFT]:
+            self.direction = 3
+
+    def move_head(self):
+        self.check_keys()
+        if self.direction == 0:
+            pass
+
+
+    def check_dir(self):
+        pass
 
 
 class Board:
@@ -49,24 +69,14 @@ class Board:
         all_tiles.append(tile_w)
 
 
-class App:
-    def __init__(self):
-        pass
-
-
 snake = Snake(ROSA)
-all_sprites.add(snake)
-
-
 
 while True:
-    fps_control.tick(25)
+    fps_control.tick(20)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-
-    all_sprites.update()
 
     all_tiles = []
     tile_b = pygame.Surface((50, 50))
@@ -77,7 +87,6 @@ while True:
     tile_w.fill(WHITE)
     all_tiles.append(tile_w)
 
-
     count_col = 0
     for i in range(0, HEIGHT, 50):
         count_col += 1
@@ -87,5 +96,6 @@ while True:
             screen.blit(all_tiles[count % 2], (i, j))
             count += 1
 
-    all_sprites.draw(screen)
+    snake.update()
+    pygame.draw.rect(screen, ROSA, snake.head)
     pygame.display.flip()
