@@ -1,7 +1,7 @@
 from Board_class import *
 
 
-class Player(Board):
+class Player():
     def __init__(self, x, y, width, height, vel):
         self.x, self.y, self.width, self.height, self.vel = x, y, width, height, vel
         self.win_size = win_size
