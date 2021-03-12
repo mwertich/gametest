@@ -20,7 +20,7 @@ all_sprites = pygame.sprite.Group()
 
 
 class Snake:
-    def __init__(self, color, grain):
+    def __init__(self, color, grain, len, start: tuple):
         self.grain = grain
         self.direction = 1
         self.image = pygame
@@ -28,6 +28,8 @@ class Snake:
         self.headx = 250
         self.heady = 250
         self.head = None
+        self.body = [(start[0] - i * 50, start[1]) for i in range(len)]
+        self.bodyrect = None
 
     def check_head(self):
         if self.head.left > WIDTH:
@@ -35,7 +37,10 @@ class Snake:
 
     def update(self):
         self.move_head()
-        self.head = pygame.Rect((self.headx, self.heady), self.size)
+        # self.head = pygame.Rect((self.headx, self.heady), self.size)
+        self.bodyrect = []
+        for i in range(len(self.body)):
+            self.bodyrect.append(pygame.Rect(self.body[i], self.size))
 
     def check_keys(self):
         keystate = pygame.key.get_pressed()
@@ -51,13 +56,20 @@ class Snake:
     def move_head(self):
         self.check_keys()
         if self.direction == 0:
-            self.heady += self.grain
+            new_head = (self.body[-1][0], self.body[-1][1] - self.grain)
+            # self.heady -= self.grain
         if self.direction == 1:
-            self.headx += self.grain
+            new_head = (self.body[-1][0] + self.grain, self.body[-1][1])
+            # self.headx += self.grain
         if self.direction == 2:
-            self.heady -= self.grain
+            new_head = (self.body[-1][0], self.body[-1][1] + self.grain)
+            # self.heady += self.grain
         if self.direction == 3:
-            self.headx -= self.grain
+            new_head = (self.body[-1][0] - self.grain, self.body[-1][1])
+            # self.headx -= self.grain
+        self.body.append(new_head)
+        self.body.pop(0)
+
 
     def check_dir(self):
         pass
@@ -94,7 +106,7 @@ def draw_grid():
             count += 1
 
 
-snake = Snake(ROSA, 50)
+snake = Snake(ROSA, 50, 5, (300, 300))
 
 
 while True:
@@ -106,5 +118,6 @@ while True:
 
     draw_grid()
     snake.update()
-    pygame.draw.rect(screen, ROSA, snake.head)
+    for part in snake.bodyrect:
+        pygame.draw.rect(screen, ROSA, part)
     pygame.display.flip()
