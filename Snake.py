@@ -20,7 +20,7 @@ all_sprites = pygame.sprite.Group()
 
 
 class Snake:
-    def __init__(self, color, grain, len, start: tuple):
+    def __init__(self, color, grain, length, start: tuple):
         self.grain = grain
         self.direction = 1
         self.image = pygame
@@ -28,7 +28,7 @@ class Snake:
         self.headx = 250
         self.heady = 250
         self.head = None
-        self.body = [(start[0] - i * 50, start[1]) for i in range(len)]
+        self.body = [(start[0] - i * 50, start[1]) for i in range(length)]
         self.bodyrect = None
 
     def check_head(self):
@@ -37,36 +37,32 @@ class Snake:
 
     def update(self):
         self.move_head()
-        # self.head = pygame.Rect((self.headx, self.heady), self.size)
         self.bodyrect = []
         for i in range(len(self.body)):
             self.bodyrect.append(pygame.Rect(self.body[i], self.size))
 
     def check_keys(self):
         keystate = pygame.key.get_pressed()
-        if keystate[pygame.K_UP]:
+        if keystate[pygame.K_UP] and self.direction != 2:
             self.direction = 0
-        if keystate[pygame.K_RIGHT]:
+        if keystate[pygame.K_RIGHT] and self.direction != 3:
             self.direction = 1
-        if keystate[pygame.K_DOWN]:
+        if keystate[pygame.K_DOWN] and self.direction != 0:
             self.direction = 2
-        if keystate[pygame.K_LEFT]:
+        if keystate[pygame.K_LEFT] and self.direction != 1:
             self.direction = 3
 
     def move_head(self):
         self.check_keys()
+        self.check_dir()
         if self.direction == 0:
             new_head = (self.body[-1][0], self.body[-1][1] - self.grain)
-            # self.heady -= self.grain
         if self.direction == 1:
             new_head = (self.body[-1][0] + self.grain, self.body[-1][1])
-            # self.headx += self.grain
         if self.direction == 2:
             new_head = (self.body[-1][0], self.body[-1][1] + self.grain)
-            # self.heady += self.grain
         if self.direction == 3:
             new_head = (self.body[-1][0] - self.grain, self.body[-1][1])
-            # self.headx -= self.grain
         self.body.append(new_head)
         self.body.pop(0)
 
@@ -74,18 +70,15 @@ class Snake:
     def check_dir(self):
         pass
 
+class Collisions:
+    def __init__(self, player: Snake):
+        self.player = player
+        self.feedback = [pygame.font.SysFont('comicsansms', 50)]
 
-class Board:
-    def __init__(self):
-        all_tiles = []
-        tile_b = pygame.Surface((10, 10))
-        tile_b.fill(BLACK)
-        all_tiles.append(tile_b)
-
-        tile_w = pygame.Surface((10, 10))
-        tile_w.fill(BLACK)
-        all_tiles.append(tile_w)
-
+    def snake_col(self):
+        if len(self.player.body) != len(set(self.player.body)):
+            screen.blit(self.feedback[0].render('Game over', 0, ROSA), (250, 250))
+            print('Collision')
 
 def draw_grid():
     all_tiles = []
@@ -107,6 +100,7 @@ def draw_grid():
 
 
 snake = Snake(ROSA, 50, 5, (300, 300))
+colis = Collisions(snake)
 
 
 while True:
@@ -118,6 +112,7 @@ while True:
 
     draw_grid()
     snake.update()
+    colis.snake_col()
     for part in snake.bodyrect:
         pygame.draw.rect(screen, ROSA, part)
     pygame.display.flip()
