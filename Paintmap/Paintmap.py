@@ -1,5 +1,6 @@
 import pygame
 import sys
+import cv2
 from Map import *
 
 # colors
