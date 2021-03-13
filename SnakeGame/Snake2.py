@@ -150,7 +150,7 @@ class Board:
             self.control_enemy()
 
     def update(self):
-        if self.snake.moves % self.spawn_rate == 0:
+        if self.snake.moves % self.spawn_rate == 0 and len(self.fruits) < 5:
             self.add_fruit()
 
     def draw_grid(self):
@@ -242,6 +242,12 @@ class Menu:
             game.enemies = [Zombie((4, 0), "S"), Zombie((8, 0), "S"), Zombie((12, 0), "S"), Zombie((16, 0), "S"),
                     Flame((19, 4), "W"), Flame((19, 8), "W"), Flame((19, 12), "W"), Flame((19, 16), "W")]
 
+        elif x >= 550 and x <= 650 and y >= 800 and y <= 900:
+            game.state = "run"
+            game.level = 4
+            game.enemies = [Zombie((0, 0), "S"), Zombie((4, 19), "N"), Zombie((8, 0), "S"), Zombie((12, 19), "N"), Zombie((16, 0), "S"),
+                            Zombie((20, 19), "N"), Flame((19, 4), "W"), Flame((0, 8), "E"), Flame((19, 12), "W"), Flame((0, 16), "E")]
+
 
 pygame.init()
 SIZE = (1000, 1100)
@@ -260,7 +266,7 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
-start_fields = [(4, 10), (3, 10), (2, 10), (1, 10), (0, 10)]
+start_fields = [(2, 10), (1, 10), (0, 10)]
 levels = [
     [Zombie((4, 0), "S"), Zombie((8, 0), "S"), Zombie((12, 0), "S"), Zombie((16, 0), "S")]
 ]
