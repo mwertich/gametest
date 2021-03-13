@@ -250,7 +250,7 @@ pygame.display.set_caption("Snake")
 
 
 done = False
-fps = 6
+fps = 5
 clock = pygame.time.Clock()
 zoom = 50
 BLACK = (0, 0, 0)
