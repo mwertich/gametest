@@ -48,7 +48,7 @@ class Snake:
         self.body.insert(0, (self.body[0][0], self.body[0][1] + 1))
 
     def reset(self):
-        self.dir, self.body, self.moves, self.has_eaten = "E", start_fields, 0, False
+        self.dir, self.body, self.moves, self.has_eaten = "E", start_fields[:], 0, False
 
 
 class Fruit:
@@ -153,7 +153,6 @@ class Menu:
             game.state = "run"
 
 
-
 pygame.init()
 SIZE = (1000, 1100)
 screen = pygame.display.set_mode((SIZE[0], SIZE[1]))
@@ -205,7 +204,6 @@ while not done:
         if not(game.state == "game over"):
             game.update()
             game.draw()
-    if game.state == "game over":
-        game.reset()
-
+        else:
+            game.reset()
 pygame.quit()
