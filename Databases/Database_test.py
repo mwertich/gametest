@@ -1,4 +1,5 @@
 import sqlite3
+import PyQt5
 
 con = sqlite3.connect('customer.db')
 
