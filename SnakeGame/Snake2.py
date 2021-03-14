@@ -304,6 +304,7 @@ while not done:
                     game.snake.change_dir("W")
                 elif event.key == pygame.K_RIGHT:
                     game.snake.change_dir("E")
+                break
         game.snake.move()
         for enemy in game.enemies:
             enemy.move()
