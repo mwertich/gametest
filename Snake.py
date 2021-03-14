@@ -1,5 +1,5 @@
 import pygame
-import sys
+import sys, time
 import random
 
 # colors
@@ -22,12 +22,14 @@ all_sprites = pygame.sprite.Group()
 
 class Snake:
     def __init__(self, color, grain, length, start: tuple):
+        self.color = color
         self.grain = grain
         self.direction = 1
         self.size = (grain, grain)
         self.body = [(start[0] + i * 50, start[1]) for i in range(length)]
         self.bodyrect = None
         self.alive = True
+        self.score = 0
         self.fed_fruit = False
 
     def update(self):
@@ -72,7 +74,9 @@ class Collisions:
     def snake_col(self):
         if len(self.player.body) != len(set(self.player.body)):
             screen.blit(self.feedback[0].render('Game over', 0, ROSA), (250, 250))
-            snake.alive = False
+            self.player.alive = False
+        if self.player.body[-1][0] > 1000 or self.player.body[-1][1] > 1000:
+            self.player.alive = False
 
 
 def draw_grid():
@@ -106,6 +110,7 @@ class Board:
         self.size = size
         self.counter = 0
         self.fps = fps
+        self.font = pygame.font.SysFont('comicsansms', 50)
 
     def gen_pos(self):
         return random.randint(0, 20), random.randint(0, 20)
@@ -131,6 +136,7 @@ class Board:
                 self.fps += 1
                 self.fruits.remove(fruit)
                 self.player.fed_fruit = True
+                self.player.score += 1
 
     def update(self):
         if self.counter % 50 == 0:
@@ -141,6 +147,8 @@ class Board:
         self.player.update()
         for fruit in self.fruits:
             pygame.draw.rect(screen, fruit.color, [fruit.pos[0]* 50, fruit.pos[1] * 50, 50, 50])
+
+        screen.blit(self.font.render(f'Fruits eaten: {self.player.score}', 0, self.player.color), (0, 0))
 
 
 
@@ -167,6 +175,6 @@ while True:
         pygame.quit()
         sys.exit()
     for part in snake.bodyrect:
-        pygame.draw.rect(screen, ROSA, part)
+        pygame.draw.rect(screen, snake.color, part)
     pygame.display.flip()
 
